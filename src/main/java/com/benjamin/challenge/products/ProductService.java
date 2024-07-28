@@ -1,5 +1,6 @@
 package com.benjamin.challenge.products;
 
+import com.benjamin.challenge.shared.EventBus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -15,6 +16,9 @@ public class ProductService {
     @Autowired
     private ProductRepository repository;
 
+    @Autowired
+    EventBus eventbus;
+
     public Product create(UpsertProductDTO p) {
         var product = Product.builder()
                 .name(p.name())
@@ -22,7 +26,9 @@ public class ProductService {
                 .price(p.price())
                 .category(p.category())
                 .build();
-        return this.repository.save(product);
+        var productSaved = this.repository.save(product);
+        this.eventbus.publish(new ProductCreatedEvent(this, productSaved));
+        return productSaved;
     }
 
     public Product update(Long id, UpsertProductDTO p) {

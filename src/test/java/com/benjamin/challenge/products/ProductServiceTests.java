@@ -1,5 +1,6 @@
 package com.benjamin.challenge.products;
 
+import com.benjamin.challenge.shared.EventBus;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,11 +27,15 @@ class ProductServiceTests {
     @MockBean
     private ProductRepository productRepository;
 
+    @MockBean
+    EventBus eventBus;
+
 
     @Test
     void testCreateProduct() {
         UpsertProductDTO dto = new UpsertProductDTO("Product1", 10, 100, "Category1");
         Product product = Product.builder()
+                .id(1234L)
                 .name(dto.name())
                 .quantity(dto.quantity())
                 .price(dto.price())
@@ -45,10 +50,11 @@ class ProductServiceTests {
         assertThat(createdProduct.getQuantity()).isEqualTo(dto.quantity());
         assertThat(createdProduct.getPrice()).isEqualTo(dto.price());
         assertThat(createdProduct.getCategory()).isEqualTo(dto.category());
+        verify(eventBus, times(1)).publish(any());
     }
 
     @Test
-    public void testUpdateProduct() {
+    void testUpdateProduct() {
         Long id = 1L;
         UpsertProductDTO dto = new UpsertProductDTO("UpdatedProduct", 20, 200, "UpdatedCategory");
         Product existingProduct = new Product(id, "Product1", 10, 100, "Category1");
