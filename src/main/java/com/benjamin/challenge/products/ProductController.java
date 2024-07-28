@@ -8,6 +8,7 @@ import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -46,7 +47,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Product successfully updated"),
     })
     @PutMapping("/{id}")
-    public Product updateProduct(@PathVariable Long id, @RequestBody UpsertProductDTO dto) {
+    public Product updateProduct(@PathVariable Long id, @RequestBody @Valid UpsertProductDTO dto) {
         return this.service.update(id, dto);
     }
 
@@ -74,7 +75,7 @@ public class ProductController {
             @ApiResponse(responseCode = "200", description = "Products successfully retrieved")
     })
     @GetMapping("/search")
-    public PageableResponse<Product> findAll(@RequestParam String name, @RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "3") @Min(0) @Max(100) int size) {
+    public PageableResponse<Product> findBySearch(@RequestParam @NotBlank String name, @RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "3") @Min(0) @Max(100) int size) {
         var pageable = PageRequest.of(page, size);
         return service.findByContainsName(name, pageable);
     }
@@ -89,8 +90,7 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public Map<String, String> handleValidationExceptions(
-            MethodArgumentNotValidException ex) {
+    public Map<String, String> handleValidationExceptions(MethodArgumentNotValidException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getBindingResult().getAllErrors().forEach(error -> {
             String fieldName = ((FieldError) error).getField();
@@ -103,12 +103,11 @@ public class ProductController {
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(ConstraintViolationException.class)
-    public Map<String, String> handleValidationExceptions(
-            ConstraintViolationException ex) {
+    public Map<String, String> handleValidationExceptions(ConstraintViolationException ex) {
         Map<String, String> errors = new HashMap<>();
         ex.getConstraintViolations().forEach(error -> {
             String errorMessage = error.getMessage();
-            errors.put(error.getPropertyPath().toString(), errorMessage);
+            errors.put(error.getPropertyPath().toString().split("\\.")[1], errorMessage);
         });
 
         return errors;
