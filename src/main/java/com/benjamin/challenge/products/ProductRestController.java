@@ -26,7 +26,7 @@ import java.util.Map;
 @Validated
 @RequestMapping("/products")
 @Tag(name = "Products API", description = "Operations related to products")
-public class ProductController {
+public class ProductRestController {
 
     @Autowired
     private ProductService service;
