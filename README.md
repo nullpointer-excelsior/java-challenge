@@ -55,7 +55,7 @@ La aplicación estará ejecutándose en [http://localhost:8080](http://localhost
 
 ### Swagger UI
 
-Encontrarás la documentación y acceso a la API [aquí](http://localhost:8080/swagger-ui/index.html) mediante Swagger.
+Encontrarás la documentación y acceso a la API [http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html) mediante Swagger.
 
 ### Autenticación
 
