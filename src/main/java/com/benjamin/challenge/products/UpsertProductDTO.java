@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;
 
-@Schema(description = "Data transfer object for creating a product")
+@Schema(description = "Data transfer object for creating a product", name = "UpsertProductRequest")
 public record UpsertProductDTO(
         @Schema(description = "Product Name", example = "Guitar")
         @NotBlank(message = "Name is required")

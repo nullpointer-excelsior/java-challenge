@@ -3,6 +3,8 @@ package com.benjamin.challenge.products;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.ConstraintViolationException;
 import jakarta.validation.Valid;
@@ -25,6 +27,7 @@ import java.util.Map;
 @RestController
 @Validated
 @RequestMapping("/products")
+@SecurityRequirement(name = "basicAuth")
 @Tag(name = "Products API", description = "Operations related to products")
 public class ProductRestController {
 

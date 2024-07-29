@@ -3,6 +3,7 @@ package com.benjamin.challenge.statistics;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import java.util.List;
 @Log4j2
 @RestController
 @RequestMapping("/statistics")
+@SecurityRequirement(name = "basicAuth")
 @Tag(name = "Statistics API", description = "Operations related to system statistics")
 public class StatisticsRestController {
 
