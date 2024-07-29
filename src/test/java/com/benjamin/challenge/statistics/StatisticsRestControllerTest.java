@@ -1,12 +1,20 @@
 package com.benjamin.challenge.statistics;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 
@@ -18,12 +26,27 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class StatisticsRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
     private StatisticsService statisticsService;
+
+    @Container
+    static PostgreSQLContainer databaseContainer = new PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("sa")
+            .withPassword("sa");
+
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url",() -> databaseContainer.getJdbcUrl());
+        registry.add("spring.datasource.username", () -> databaseContainer.getUsername());
+        registry.add("spring.datasource.password", () -> databaseContainer.getPassword());
+    }
 
     @Test
     void testGetAllStatistics() throws Exception {

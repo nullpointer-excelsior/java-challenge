@@ -8,7 +8,13 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.DynamicPropertyRegistry;
+import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
+import org.testcontainers.containers.PostgreSQLContainer;
+import org.testcontainers.junit.jupiter.Container;
+import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.util.Arrays;
 import java.util.List;
@@ -22,13 +28,28 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
-class ProductRestcontrollerTest {
+@Testcontainers
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
+class ProductRestControllerTest {
     @Autowired
     private MockMvc mockMvc;
     @MockBean
     private ProductService productService;
     @Autowired
     private ObjectMapper objectMapper;
+
+    @Container
+    static PostgreSQLContainer databaseContainer = new PostgreSQLContainer("postgres:latest")
+            .withDatabaseName("integration-tests-db")
+            .withUsername("sa")
+            .withPassword("sa");
+
+    @DynamicPropertySource
+    static void setProperties(DynamicPropertyRegistry registry) {
+        registry.add("spring.datasource.url",() -> databaseContainer.getJdbcUrl());
+        registry.add("spring.datasource.username", () -> databaseContainer.getUsername());
+        registry.add("spring.datasource.password", () -> databaseContainer.getPassword());
+    }
 
     @Test
     void testCreateProduct() throws Exception {
