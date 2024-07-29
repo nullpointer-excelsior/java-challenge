@@ -46,7 +46,7 @@ public class ProductRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product successfully updated"),
     })
-    @PutMapping("/{id}")
+    @PutMapping(value="/{id}", produces = "application/json")
     public Product updateProduct(@PathVariable Long id, @RequestBody @Valid UpsertProductDTO dto) {
         return this.service.update(id, dto);
     }
@@ -55,7 +55,7 @@ public class ProductRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product successfully deleted")
     })
-    @DeleteMapping("/{id}")
+    @DeleteMapping(value="/{id}", produces = "application/json")
     public void delete(@PathVariable Long id) {
         this.service.delete(id);
     }
@@ -64,7 +64,7 @@ public class ProductRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Products successfully retrieved")
     })
-    @GetMapping
+    @GetMapping(produces = "application/json")
     public PageableResponse<Product> findAll(@RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "3") @Min(0) @Max(100) int size) {
         var pageable = PageRequest.of(page, size);
         return service.findAll(pageable);
@@ -74,16 +74,17 @@ public class ProductRestController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Products successfully retrieved")
     })
-    @GetMapping("/search")
+    @GetMapping(value="/search", produces = "application/json")
     public PageableResponse<Product> findBySearch(@RequestParam @NotBlank String name, @RequestParam(defaultValue = "0") @Min(0) int page, @RequestParam(defaultValue = "3") @Min(0) @Max(100) int size) {
         var pageable = PageRequest.of(page, size);
         return service.findByContainsName(name, pageable);
     }
+
     @Operation(summary = "Find product by ID")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Product successfully retrieved")
     })
-    @GetMapping("/{id}")
+    @GetMapping(value="/{id}", produces = "application/json")
     public Product findById(@PathVariable Long id) {
         return service.findById(id);
     }
@@ -97,7 +98,6 @@ public class ProductRestController {
             String errorMessage = error.getDefaultMessage();
             errors.put(fieldName, errorMessage);
         });
-
         return errors;
     }
 
@@ -109,11 +109,7 @@ public class ProductRestController {
             String errorMessage = error.getMessage();
             errors.put(error.getPropertyPath().toString().split("\\.")[1], errorMessage);
         });
-
         return errors;
-    }
-
-    record GenericResponse(String message, Integer status) {
     }
 
 }
