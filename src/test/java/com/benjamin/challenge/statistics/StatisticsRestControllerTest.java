@@ -20,6 +20,7 @@ import java.util.Arrays;
 
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -29,6 +30,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class StatisticsRestControllerTest {
+    static String USERNAME_AUTH = "test";
+    static String PASSWORD_AUTH = "test";
     @Autowired
     private MockMvc mockMvc;
 
@@ -46,6 +49,8 @@ class StatisticsRestControllerTest {
         registry.add("spring.datasource.url",() -> databaseContainer.getJdbcUrl());
         registry.add("spring.datasource.username", () -> databaseContainer.getUsername());
         registry.add("spring.datasource.password", () -> databaseContainer.getPassword());
+        registry.add("spring.security.user.name", () -> USERNAME_AUTH);
+        registry.add("spring.security.user.password", () -> PASSWORD_AUTH);
     }
 
     @Test
@@ -58,6 +63,7 @@ class StatisticsRestControllerTest {
         when(statisticsService.getAllStatistics()).thenReturn(statisticsList);
 
         mockMvc.perform(get("/statistics/categories")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(2)))

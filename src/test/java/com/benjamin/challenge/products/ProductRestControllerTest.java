@@ -22,6 +22,7 @@ import java.util.List;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.httpBasic;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -31,6 +32,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @Testcontainers
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ProductRestControllerTest {
+
+    static String USERNAME_AUTH = "test";
+    static String PASSWORD_AUTH = "test";
     @Autowired
     private MockMvc mockMvc;
     @MockBean
@@ -49,6 +53,8 @@ class ProductRestControllerTest {
         registry.add("spring.datasource.url",() -> databaseContainer.getJdbcUrl());
         registry.add("spring.datasource.username", () -> databaseContainer.getUsername());
         registry.add("spring.datasource.password", () -> databaseContainer.getPassword());
+        registry.add("spring.security.user.name", () -> USERNAME_AUTH);
+        registry.add("spring.security.user.password", () -> PASSWORD_AUTH);
     }
 
     @Test
@@ -65,6 +71,7 @@ class ProductRestControllerTest {
         when(productService.create(any(UpsertProductDTO.class))).thenReturn(product);
 
         mockMvc.perform(post("/products")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(product)))
                 .andExpect(status().isOk())
@@ -79,6 +86,7 @@ class ProductRestControllerTest {
     @Test
     void testCreateProductValidation() throws Exception {
         mockMvc.perform(post("/products")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"\",\"quantity\":-1,\"price\":-1,\"category\":\"\"}"))
                 .andExpect(status().isBadRequest())
@@ -98,6 +106,7 @@ class ProductRestControllerTest {
         when(productService.update(eq(id), any(UpsertProductDTO.class))).thenReturn(product);
 
         mockMvc.perform(put("/products/{id}", id)
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"UpdatedProduct\",\"quantity\":20,\"price\":200,\"category\":\"UpdatedCategory\"}"))
                 .andExpect(status().isOk())
@@ -112,6 +121,7 @@ class ProductRestControllerTest {
         Long id = 1L;
 
         mockMvc.perform(put("/products/{id}", id)
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .contentType(MediaType.APPLICATION_JSON)
                         .content("{\"name\":\"\",\"quantity\":-1,\"price\":-1,\"category\":\"\"}"))
                 .andExpect(status().isBadRequest())
@@ -127,7 +137,7 @@ class ProductRestControllerTest {
         Long id = 1L;
         doNothing().when(productService).delete(id);
 
-        mockMvc.perform(delete("/products/{id}", id))
+        mockMvc.perform(delete("/products/{id}", id).with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH)))
                 .andExpect(status().isOk());
 
         verify(productService, times(1)).delete(id);
@@ -141,7 +151,8 @@ class ProductRestControllerTest {
 
         when(productService.findAll(any(Pageable.class))).thenReturn(response);
 
-        mockMvc.perform(get("/products"))
+        mockMvc.perform(get("/products")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElement").value(response.totalElement()))
                 .andExpect(jsonPath("$.page").value(response.page()))
@@ -152,6 +163,7 @@ class ProductRestControllerTest {
     @Test
     void testFindAllValidation() throws Exception {
         mockMvc.perform(get("/products")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .param("page", "-1")
                         .param("size", "101"))
                 .andExpect(status().isBadRequest())
@@ -162,6 +174,7 @@ class ProductRestControllerTest {
     @Test
     void testFindByContainsNameValidation() throws Exception {
         mockMvc.perform(get("/products/search")
+                        .with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH))
                         .param("name", "")
                         .param("page", "-1")
                         .param("size", "101"))
@@ -179,7 +192,7 @@ class ProductRestControllerTest {
 
         when(productService.findByContainsName(eq("Product"), any(Pageable.class))).thenReturn(response);
 
-        mockMvc.perform(get("/products/search").param("name", "Product"))
+        mockMvc.perform(get("/products/search").param("name", "Product").with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.totalElement").value(response.totalElement()))
                 .andExpect(jsonPath("$.page").value(response.page()))
@@ -194,7 +207,7 @@ class ProductRestControllerTest {
 
         when(productService.findById(id)).thenReturn(product);
 
-        mockMvc.perform(get("/products/{id}", id))
+        mockMvc.perform(get("/products/{id}", id).with(httpBasic(USERNAME_AUTH, PASSWORD_AUTH)))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(product.getId()))
                 .andExpect(jsonPath("$.name").value(product.getName()))
