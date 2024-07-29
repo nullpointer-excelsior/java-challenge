@@ -1,5 +1,7 @@
-package com.benjamin.challenge.statistics;
+package com.benjamin.challenge.statistics.application.restcontrollers;
 
+import com.benjamin.challenge.statistics.application.StatisticsService;
+import com.benjamin.challenge.statistics.domain.ProductStatistics;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

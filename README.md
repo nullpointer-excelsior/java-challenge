@@ -81,7 +81,7 @@ Puedes desplegar la aplicación con Docker de la siguiente manera:
 #!/bin/bash
 
 # deploy app and infra local
-./gradlew infraStar
+./gradlew infraStart
 
 # stop app and infra
 ./gradlew infraStop
@@ -113,6 +113,7 @@ Este proyecto fue desarrollado por:
 - Spring 3.3.2
 - Docker
 - TestContainers
+- JUnit
 - SpringSecurity
 - SpringJPA
 - OpenApi

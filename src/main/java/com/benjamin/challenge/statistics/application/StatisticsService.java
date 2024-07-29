@@ -1,7 +1,8 @@
-package com.benjamin.challenge.statistics;
+package com.benjamin.challenge.statistics.application;
 
+import com.benjamin.challenge.statistics.domain.ProductStatistics;
+import com.benjamin.challenge.statistics.domain.ProductStatisticsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

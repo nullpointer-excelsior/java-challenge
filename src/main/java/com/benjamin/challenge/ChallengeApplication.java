@@ -1,6 +1,6 @@
 package com.benjamin.challenge;
 
-import com.benjamin.challenge.products.ProductService;
+import com.benjamin.challenge.products.application.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

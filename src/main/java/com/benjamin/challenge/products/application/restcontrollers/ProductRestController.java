@@ -1,5 +1,9 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.products.application.restcontrollers;
 
+import com.benjamin.challenge.products.application.ProductService;
+import com.benjamin.challenge.products.domain.Product;
+import com.benjamin.challenge.products.dto.PageableResponse;
+import com.benjamin.challenge.products.dto.UpsertProductDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;

@@ -1,4 +1,4 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.products.domain;
 
 import lombok.Getter;
 import lombok.Setter;

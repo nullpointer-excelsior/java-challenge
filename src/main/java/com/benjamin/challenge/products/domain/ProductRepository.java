@@ -1,4 +1,4 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.products.domain;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

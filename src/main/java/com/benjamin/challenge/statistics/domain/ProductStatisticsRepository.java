@@ -1,4 +1,4 @@
-package com.benjamin.challenge.statistics;
+package com.benjamin.challenge.statistics.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

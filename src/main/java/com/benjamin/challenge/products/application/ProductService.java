@@ -1,5 +1,10 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.products.application;
 
+import com.benjamin.challenge.products.domain.Product;
+import com.benjamin.challenge.products.domain.ProductCreatedEvent;
+import com.benjamin.challenge.products.domain.ProductRepository;
+import com.benjamin.challenge.products.dto.PageableResponse;
+import com.benjamin.challenge.products.dto.UpsertProductDTO;
 import com.benjamin.challenge.shared.EventBus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;

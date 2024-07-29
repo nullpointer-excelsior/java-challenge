@@ -1,4 +1,4 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.products.dto;
 
 import java.util.List;
 

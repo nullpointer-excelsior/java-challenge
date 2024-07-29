@@ -1,27 +1,24 @@
-package com.benjamin.challenge.products;
+package com.benjamin.challenge.statistics.domain;
 
 import jakarta.persistence.*;
 import lombok.*;
 
 @Getter
 @Setter
-@ToString
 @Builder
 @Entity
-@Table(name = "products")
+@Table(name = "statistics")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
+public class ProductStatistics {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(nullable = false)
-    private String name;
-    @Column()
-    private Integer quantity;
-    @Column()
-    private Integer price;
-    @Column()
     private String category;
+
+    @Column(nullable = false)
+    private Long productCount;
 }

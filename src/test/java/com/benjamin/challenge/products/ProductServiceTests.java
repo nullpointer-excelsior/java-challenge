@@ -1,10 +1,13 @@
 package com.benjamin.challenge.products;
 
+import com.benjamin.challenge.products.application.ProductService;
+import com.benjamin.challenge.products.domain.Product;
+import com.benjamin.challenge.products.domain.ProductRepository;
+import com.benjamin.challenge.products.dto.PageableResponse;
+import com.benjamin.challenge.products.dto.UpsertProductDTO;
 import com.benjamin.challenge.shared.EventBus;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Page;
