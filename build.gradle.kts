@@ -69,8 +69,8 @@ val databaseName by extra("java-challenge-database")
 
 
 tasks.register("databaseStart", Exec::class) {
-	group = "Database"
-	description = "Start the PostgreSQL database"
+	group = "Infrastructure"
+	description = "Start the application PostgreSQL database"
 	commandLine("docker", "run", "-d", "--name", databaseName,
 		"-e", "POSTGRES_USER=java-challenge",
 		"-e", "POSTGRES_PASSWORD=java-challenge",
@@ -80,20 +80,20 @@ tasks.register("databaseStart", Exec::class) {
 }
 
 tasks.register("databaseStop", Exec::class) {
-	group = "Database"
-	description = "Stop and remove the PostgreSQL database"
+	group = "Infrastructure"
+	description = "Stop and remove the application PostgreSQL database"
 	commandLine("docker", "rm", "-f", databaseName)
 }
 
 tasks.register("infraStart", Exec::class) {
 	group="Infrastructure"
-	description = "Start infra"
+	description = "Deploy local infrastructure with database and application running"
 	commandLine("docker", "compose" ,"up", "-d")
 }
 
 tasks.register("infraStop", Exec::class) {
 	group="Infrastructure"
-	description = "Stop infra"
+	description = "Stop local infrastructure"
 	commandLine("docker", "compose" ,"down")
 }
 
