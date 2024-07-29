@@ -10,6 +10,7 @@ plugins {
 group = "com.benjamin"
 version = "0.0.1-SNAPSHOT"
 
+
 java {
 	toolchain {
 		languageVersion = JavaLanguageVersion.of(17)
@@ -24,7 +25,7 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-web")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
-	//implementation("org.springframework.boot:spring-boot-starter-security")
+	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.postgresql:postgresql")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 	compileOnly("org.projectlombok:lombok")
@@ -63,3 +64,36 @@ tasks.withType<Test> {
 		logLevel = LogLevel.LIFECYCLE
 	}
 }
+
+val databaseName by extra("java-challenge-database")
+
+
+tasks.register("databaseStart", Exec::class) {
+	group = "Database"
+	description = "Start the PostgreSQL database"
+	commandLine("docker", "run", "-d", "--name", databaseName,
+		"-e", "POSTGRES_USER=java-challenge",
+		"-e", "POSTGRES_PASSWORD=java-challenge",
+		"-e", "POSTGRES_DB=java-challenge",
+		"-p", "5432:5432", "postgres:latest")
+
+}
+
+tasks.register("databaseStop", Exec::class) {
+	group = "Database"
+	description = "Stop and remove the PostgreSQL database"
+	commandLine("docker", "rm", "-f", databaseName)
+}
+
+tasks.register("infraStart", Exec::class) {
+	group="Infrastructure"
+	description = "Start infra"
+	commandLine("docker", "compose" ,"up", "-d")
+}
+
+tasks.register("infraStop", Exec::class) {
+	group="Infrastructure"
+	description = "Stop infra"
+	commandLine("docker", "compose" ,"down")
+}
+
